@@ -31,7 +31,8 @@ def usage():
     print "         -h: work with documents in directory (use \"yes\" for local analysis)"
     print "         -n: limit of files to download"
     print "         -o: working directory (location to save downloaded files)"
-    print "         -f: output file\n"
+    print "         -f: output file"
+    print "         -a: google area(example:hk, default:com)\n"
     print " Examples:"
     print "  metagoofil.py -d apple.com -t doc,pdf -l 200 -n 50 -o applefiles -f results.html"
     print "  metagoofil.py -h yes -o applefiles -f results.html (local dir analysis)\n"
@@ -50,10 +51,11 @@ def doprocess(argv):
     localanalysis = "no"
     failedfiles = []
     emails = []
+    area = "com"
     if len(sys.argv) < 3:
         usage()
     try:
-        opts, args = getopt.getopt(argv, "l:d:f:h:n:t:o:")
+        opts, args = getopt.getopt(argv, "l:d:f:h:n:t:o:a:")
     except getopt.GetoptError:
         usage()
     for opt, arg in opts:
@@ -76,6 +78,8 @@ def doprocess(argv):
             dir = arg
         elif opt == '-f':
             outhtml = arg
+        elif opt == '-a':
+            area = arg
     if os.path.exists(dir):
         pass
     else:
@@ -84,7 +88,7 @@ def doprocess(argv):
         print "\n[-] Starting online search..."
         for filetype in filetypes:
             print "\n[-] Searching for "+ filetype + " files, with a limit of " + str(limit)
-            search = googlesearch.search_google(word, limit, start, filetype)
+            search = googlesearch.search_google(word, limit, start, filetype, area)
             search.process_files()
             files = search.get_files()
             print "Results: " + str(len(files)) + " files found"
